@@ -10,6 +10,7 @@ public class PlayerScript : MonoBehaviour
     private float xRot;
     private float MaxRot = 45f;
     private float MinRot = -45f;
+    private float PlayerHealth = 100;
 
     [SerializeField] private Transform PlayerCamera;
     [SerializeField] private Rigidbody PlayerBody;
@@ -88,6 +89,13 @@ public class PlayerScript : MonoBehaviour
     public void MouseLookInput(InputAction.CallbackContext ctx)
     {
         PlayerMouseInput = new Vector2(ctx.ReadValue<Vector2>().x, ctx.ReadValue<Vector2>().y);
+    }
+
+
+   public void Heal()
+    {
+        PlayerHealth += 20;
+        Debug.Log("Healed");
     }
 
 }
