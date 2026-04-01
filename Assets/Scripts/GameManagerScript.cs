@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -9,7 +10,8 @@ public class GameManagerScript : MonoBehaviour
     public PickupSpawningScript AlienSpawner;
     [SerializeField] float AlienInterval;
     [SerializeField] float AlienAmount = 1f;
-
+    [SerializeField] private Image HealthBar;
+    [SerializeField] public GameObject player;
 
 
     private bool Ispaused;
@@ -36,6 +38,13 @@ public class GameManagerScript : MonoBehaviour
             //Debug.Log("Spawn");
             StartCoroutine("TempPause");
             AlienAmount += 1;
+        }
+
+        if ((int)Time.time % 3 == 0 && (int)Time.time != 0 && Ispaused == false)
+        {
+            player.GetComponent<PlayerScript>().PlayerHealth -= 10f;
+            StartCoroutine("TempPause");
+            HealthBar.fillAmount = player.GetComponent<PlayerScript>().PlayerHealth / 100;
         }
     }
 

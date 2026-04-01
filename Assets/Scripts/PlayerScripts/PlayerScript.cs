@@ -1,7 +1,7 @@
 using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -10,19 +10,22 @@ public class PlayerScript : MonoBehaviour
     private float xRot;
     private float MaxRot = 45f;
     private float MinRot = -45f;
-    private float PlayerHealth = 100;
+    public float PlayerHealth = 100;
+    private float MaxHealth = 100;
 
     [SerializeField] private Transform PlayerCamera;
     [SerializeField] private Rigidbody PlayerBody;
     [SerializeField] private Transform GroundCheck;
     [SerializeField] private LayerMask FloorMask; 
     [SerializeField] private LayerMask WallMask; 
+    [SerializeField] private Image HealthBar; 
     [Space]
     [SerializeField] private float Speed;
     [SerializeField] private float Sensitivity;
     [SerializeField] private float Jumpforce;
     [SerializeField] private bool InAir = false;
     [SerializeField] private bool CanWallJump = false;
+    [SerializeField] private bool temp = true;
 
 
 
@@ -36,6 +39,7 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (Physics.CheckSphere(GroundCheck.position, 0.2f, FloorMask))
         {
             InAir = false;
@@ -46,12 +50,17 @@ public class PlayerScript : MonoBehaviour
         }
             MovePlayer();
         MovePlayerCamera();
+        
+        HealthBar.fillAmount = PlayerHealth / MaxHealth;
     }
 
-   private void MovePlayer()
+   
+
+    private void MovePlayer()
     {
         Vector3 MoveVector = transform.TransformDirection(PlayerMovementInput) * Speed;
         PlayerBody.linearVelocity = new Vector3(MoveVector.x, PlayerBody.linearVelocity.y, MoveVector.z);
+        
 
     }
 
