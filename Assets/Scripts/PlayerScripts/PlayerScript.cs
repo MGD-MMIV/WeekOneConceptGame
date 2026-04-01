@@ -15,10 +15,13 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] private Rigidbody PlayerBody;
     [SerializeField] private Transform GroundCheck;
     [SerializeField] private LayerMask FloorMask; 
+    [SerializeField] private LayerMask WallMask; 
     [Space]
     [SerializeField] private float Speed;
     [SerializeField] private float Sensitivity;
     [SerializeField] private float Jumpforce;
+    [SerializeField] private bool InAir = false;
+    [SerializeField] private bool CanWallJump = false;
 
 
 
@@ -32,14 +35,21 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MovePlayer();
+        if (Physics.CheckSphere(GroundCheck.position, 0.2f, FloorMask))
+        {
+            InAir = false;
+        }
+        else
+        {
+            InAir = true;
+        }
+            MovePlayer();
         MovePlayerCamera();
     }
 
    private void MovePlayer()
     {
         Vector3 MoveVector = transform.TransformDirection(PlayerMovementInput) * Speed;
-        //Vector3 MoveVector = PlayerMovementInput * Speed;
         PlayerBody.linearVelocity = new Vector3(MoveVector.x, PlayerBody.linearVelocity.y, MoveVector.z);
 
     }
@@ -55,9 +65,16 @@ public class PlayerScript : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext ctx)
     {
-        if (Physics.CheckSphere(GroundCheck.position, 0.1f, FloorMask))
+        if (InAir == false)
         {
             PlayerBody.AddForce(Vector3.up * Jumpforce, ForceMode.Impulse);
+            CanWallJump = true;
+
+
+        } else if (Physics.CheckSphere(transform.position, 1f, WallMask) && CanWallJump)
+        {
+            PlayerBody.AddForce(Vector3.up * Jumpforce * 2, ForceMode.Impulse);
+            CanWallJump = false;
         }
         
 
